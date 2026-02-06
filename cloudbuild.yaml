@@ -1,0 +1,26 @@
+steps:
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -euo pipefail
+
+        FUNCTION_NAME="helloHttp"
+        REGION="us-central1"
+        RUNTIME="nodejs20"
+        ENTRY_POINT="helloHttp"
+
+        echo "Deploying ${FUNCTION_NAME} to ${REGION} (Gen2, ${RUNTIME})..."
+
+        gcloud functions deploy "${FUNCTION_NAME}" \
+          --gen2 \
+          --region="${REGION}" \
+          --runtime="${RUNTIME}" \
+          --source="." \
+          --entry-point="${ENTRY_POINT}" \
+          --trigger-http \
+          --allow-unauthenticated
+
+options:
+  logging: CLOUD_LOGGING_ONLY
