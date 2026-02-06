@@ -11,14 +11,14 @@ steps:
         RUNTIME="nodejs20"
         ENTRY_POINT="helloHttp"
 
-        echo "Deploying ${FUNCTION_NAME} to ${REGION} (Gen2, ${RUNTIME})..."
+        echo "Deploying $FUNCTION_NAME to $REGION (Gen2, $RUNTIME)..."
 
-        gcloud functions deploy "${FUNCTION_NAME}" \
+        gcloud functions deploy "$FUNCTION_NAME" \
           --gen2 \
-          --region="${REGION}" \
-          --runtime="${RUNTIME}" \
+          --region="$REGION" \
+          --runtime="$RUNTIME" \
           --source="." \
-          --entry-point="${ENTRY_POINT}" \
+          --entry-point="$ENTRY_POINT" \
           --trigger-http \
           --allow-unauthenticated
 
