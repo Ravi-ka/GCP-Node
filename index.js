@@ -1,16 +1,13 @@
-/**
- * HTTP Cloud Function entry point.
- * For Gen 2, this is still a standard HTTP handler (req, res).
- */
-exports.helloHttp = (req, res) => {
-  const name =
-    (req.query && req.query.name) ||
-    (req.body && req.body.name) ||
-    "world";
+import express from 'express';
 
-  res.status(200).json({
-    message: `Hello, ${name}!`,
-    method: req.method,
-    timestamp: new Date().toISOString(),
-  });
-};
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
+
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
