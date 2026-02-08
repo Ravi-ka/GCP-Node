@@ -7,7 +7,7 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-app.get('/test', testFunction);
+//app.get('/test', testFunction);
 
 
 const PORT = process.env.PORT || 8080; // add this is in environment variable in cloud run
