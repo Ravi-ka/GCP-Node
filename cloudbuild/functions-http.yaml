@@ -1,0 +1,30 @@
+# Cloud Build: deploy a Gen2 HTTP Cloud Function from a subdirectory.
+# Trigger suggestion: include files "order-service/**" (or your function folder)
+# and use this file as the build config.
+
+substitutions:
+  _FUNCTION_NAME: createOrder
+  _REGION: asia-south1
+  _SOURCE_DIR: order-service
+  _ENTRY_POINT: createOrder
+  _RUNTIME: nodejs22
+
+steps:
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        gcloud functions deploy "${_FUNCTION_NAME}" \
+          --gen2 \
+          --runtime="${_RUNTIME}" \
+          --region="${_REGION}" \
+          --project="$PROJECT_ID" \
+          --source="${_SOURCE_DIR}" \
+          --entry-point="${_ENTRY_POINT}" \
+          --trigger-http \
+          --allow-unauthenticated \
+          --quiet
+
+options:
+  logging: CLOUD_LOGGING_ONLY

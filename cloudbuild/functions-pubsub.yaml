@@ -1,0 +1,34 @@
+# Cloud Build: deploy a Gen2 Pub/Sub-triggered Cloud Function from a subdirectory.
+# Trigger suggestion: include files "payment-service/**" (or your function folder)
+# and use this file as the build config.
+
+substitutions:
+  _FUNCTION_NAME: processPayment
+  _REGION: asia-south1
+  _SOURCE_DIR: payment-service
+  _ENTRY_POINT: processPayment
+  _RUNTIME: nodejs22
+  _TOPIC: order-events
+
+steps:
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        # Ensure the topic exists (idempotent).
+        gcloud pubsub topics describe "${_TOPIC}" --project "$PROJECT_ID" >/dev/null 2>&1 || \
+          gcloud pubsub topics create "${_TOPIC}" --project "$PROJECT_ID"
+
+        gcloud functions deploy "${_FUNCTION_NAME}" \
+          --gen2 \
+          --runtime="${_RUNTIME}" \
+          --region="${_REGION}" \
+          --project="$PROJECT_ID" \
+          --source="${_SOURCE_DIR}" \
+          --entry-point="${_ENTRY_POINT}" \
+          --trigger-topic="${_TOPIC}" \
+          --quiet
+
+options:
+  logging: CLOUD_LOGGING_ONLY
